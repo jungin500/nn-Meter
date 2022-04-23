@@ -191,7 +191,7 @@ def build_predictor_for_kernel(kernel_type, backend, init_sample_num = 1000, fin
 
         # merge finegrained data with previous data and build new regression model
         kernel_data = merge_prev_info(new_info=new_kernel_data, prev_info=kernel_data)
-        predictor, acc10, error_configs = build_predictor_by_data(kernel_type, kernel_data, backend, error_threshold=error_threshold, mark='finegrained{i}',
+        predictor, acc10, error_configs = build_predictor_by_data(kernel_type, kernel_data, backend, error_threshold=error_threshold, mark=f'finegrained{i}',
                                                                   save_path=os.path.join(ws_mode_path, "results"))
         logging.keyinfo(f'Iteration {i}: acc10 {acc10}, error_configs number: {len(error_configs)}')
 
