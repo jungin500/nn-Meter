@@ -41,7 +41,10 @@ class PoolingSampler(BaseConfigSampler):
         return sampling_pooling(sample_num)
     
     def finegrained_config_sampling(self, configs, sample_num):
-        return finegrained_sampling_pooling(sample_num, fix_ks=3, fix_stride=1)
+        for config in configs:
+            if 'POOL_STRIDES' in config.keys():
+                config['STRIDES'] = config.pop('POOL_STRIDES')
+        return finegrained_sampling_pooling(configs, sample_num)
 
 
 class FCSampler(BaseConfigSampler):
@@ -89,7 +92,7 @@ class GlobalAvgPoolSampler(BaseConfigSampler):
 class HwCinSampler(BaseConfigSampler):
     
     def prior_config_sampling(self, sample_num):
-        return sampling_hw_cin(sample_num, resize = True)
+        return sampling_hw_cin(sample_num)
     
     def finegrained_config_sampling(self, configs, sample_num):
         return finegrained_sampling_hw_cin(configs, sample_num)
