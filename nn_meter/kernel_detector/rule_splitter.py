@@ -49,12 +49,15 @@ class RuleSplitter:
                 # fuse node
                 if mon == 0:
                     fusion_graph.fuse(i, j)
+                    fusion_graph.mark_ready(j)
+                    fused = True
+                    if mon == 1:  # only fused to first outnode
+                        break
                 else:
                     fusion_graph.fuse(i, j, True)
-                fusion_graph.mark_ready(j)
-                fused = True
-                if mon == 1:  # only fused to first outnode
-                    break
+                    fusion_graph.mark_ready(j)
+                    fused = True
+                    break  # next(fusion_graph.get_outbounds(i)) will suffer exception
             if fused:
                 i -= 1
 

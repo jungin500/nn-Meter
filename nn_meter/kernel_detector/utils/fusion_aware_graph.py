@@ -44,10 +44,14 @@ class FusionAwareGraph:
         node should be root, outnode should be an unfused single node
         """
         self._uf.union(node, outnode)
+        new_typename = '-'.join([self._types[node], self._types[outnode]])
         if not update:
             self._outbounds[node] = self._outbounds[outnode]
         else:
             self._outbounds[node].update(self._outbounds[outnode])
+            # Update its name so double fuse will not occur on next `node` iteration
+            self._types[node] = new_typename
+            self._types[outnode] = new_typename  # for sanity
 
     def mark_ready(self, node):
         self._ready[node] = True

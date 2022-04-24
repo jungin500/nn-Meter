@@ -36,6 +36,18 @@ def predict_model(model, predictors):
         kernelname = get_kernel_name(kernel)
         if kernelname in predictors:
             pred = predictors[kernelname]
+            
+            # Workaround for newly created predictor - duplicate input exclusion required
+            assert 'n_features_in_' in dir(pred), "scikit-learn RandomForestRegressor doesn't have n_features_in_; try downgrading library."
+            if pred.n_features_in_ == len(dicts[kernel][0]) - 1:
+                if kernelname in ['maxpool', 'avgpool', 'concat']:
+                    continue
+                # sanity check
+                for feature in dicts[kernel]:
+                    assert feature[1] == feature[2]  # Will remove 3rd argument
+                for feature in dicts[kernel]:
+                    feature.pop(2)
+                    
             pys = pred.predict(dicts[kernel]) # in unit of ms
             if len(pys) != 0:
                 py += sum(pys)
